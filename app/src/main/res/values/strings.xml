@@ -12,4 +12,5 @@
     <string name="event_date">Event Date</string>
     <string name="err_end_time_error">Start time cannot be later than End time</string>
     <string name="err_start_time_error">Selected time is in the past</string>
+    <string name="conflict_exception">Selected time slot has an existing event</string>
 </resources>

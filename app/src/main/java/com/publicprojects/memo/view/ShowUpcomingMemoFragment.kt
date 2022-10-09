@@ -8,7 +8,9 @@ import com.publicprojects.memo.databinding.FragmentShowUpcomingMemoBinding
 import com.publicprojects.memo.util.Directions
 import com.publicprojects.memo.util.clickWithDebounce
 import com.publicprojects.memo.util.navigate
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ShowUpcomingMemoFragment : Fragment(R.layout.fragment_show_upcoming_memo) {
 
     private lateinit var binding: FragmentShowUpcomingMemoBinding

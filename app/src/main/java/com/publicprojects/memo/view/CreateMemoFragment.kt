@@ -2,18 +2,28 @@ package com.publicprojects.memo.view
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.publicprojects.memo.R
 import com.publicprojects.memo.databinding.FragmentCreateMemoBinding
 import com.publicprojects.memo.util.*
-import com.publicprojects.memo.viewmodel.MemoViewModel
+import com.publicprojects.memo.view.sealed.UiState
+import com.publicprojects.memo.viewmodel.CreateMemoViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class CreateMemoFragment : Fragment(R.layout.fragment_create_memo) {
 
     private val datePicker by lazy {
@@ -45,15 +55,17 @@ class CreateMemoFragment : Fragment(R.layout.fragment_create_memo) {
 
     private lateinit var binding: FragmentCreateMemoBinding
 
-    private val viewModel by activityViewModels<MemoViewModel>()
+    private lateinit var viewModel: CreateMemoViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentCreateMemoBinding.bind(view)
 
+        viewModel = ViewModelProvider(this)[CreateMemoViewModel::class.java]
+
         requireActivity().setToolbarBackButton(binding.toolbar)
 
         binding.btnSaveMemo.clickWithDebounce {
-            //
+            viewModel.saveMemo()
         }
 
         datePicker.addOnPositiveButtonClickListener {
@@ -102,7 +114,7 @@ class CreateMemoFragment : Fragment(R.layout.fragment_create_memo) {
 
     private fun observeViewModel() {
         viewModel.eventDate.observe(viewLifecycleOwner) {
-            binding.tilDate.editText?.setText(Utils.getDateFromTS(it))
+            binding.tilDate.editText?.setText(it)
         }
         viewModel.eventStartTime.observe(viewLifecycleOwner) {
             binding.tilStartTime.editText?.setText(Utils.getTimeInAmPm(it))
@@ -118,6 +130,26 @@ class CreateMemoFragment : Fragment(R.layout.fragment_create_memo) {
         }
         viewModel.startTimeError.observe(viewLifecycleOwner) {
             binding.tilStartTime.error = it
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.createMemo.collectLatest {
+                    when (it) {
+                        is UiState.Idle -> Unit
+                        is UiState.Success -> {
+                            Toast.makeText(
+                                requireContext().applicationContext, "Added new memo", Toast.LENGTH_LONG
+                            ).show()
+                            requireActivity().onBackPressedDispatcher.onBackPressed()
+                        }
+                        is UiState.Failure -> {
+                            Snackbar.make(
+                                binding.root, it.t.message ?: "", Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+            }
         }
     }
 }

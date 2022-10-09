@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "memos")
 data class Memo(
-    @PrimaryKey val uid: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val desc: String,
     @ColumnInfo(name = "start_time") val startTime: Long,

@@ -15,4 +15,7 @@ interface MemoDao {
 
     @Insert
     fun insert(memo: Memo)
+
+    @Query("select count(*) from memos where start_time <= :startTs and end_time >= :startTs")
+    fun getConflicts(startTs: Long): Int
 }

@@ -2,14 +2,15 @@ package com.publicprojects.memo.util
 
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 object Utils {
+
+    const val CONFLICT_EXCEPTION = "com.publicprojects.memo.CONFLICT_EXCEPTION"
+
     fun getDateFromTS(date: Long): String {
         if (date == 0L) return ""
         return SimpleDateFormat(
-            "dd-MMM-yyyy",
-            Locale.getDefault()
+            "dd-MMM-yyyy", Locale.getDefault()
         ).format(date)
     }
 
@@ -22,7 +23,7 @@ object Utils {
             hr = first()
             min = last()
             var hour = Integer.parseInt(hr)
-            if (hour > 12) {
+            if (hour >= 12) {
                 amPm = "PM"
                 hour -= 12
             } else {
@@ -34,13 +35,14 @@ object Utils {
         return "$hr:$min $amPm"
     }
 
-    fun isPast(date: Long, startT: String): Boolean {
-        if (date == 0L || startT.isBlank()) return false
-        var time = date
-        startT.split(":").apply {
-            time += TimeUnit.MILLISECONDS.convert(first().toLong(), TimeUnit.HOURS) +
-                    TimeUnit.MILLISECONDS.convert(last().toLong(), TimeUnit.MINUTES)
-        }
-        return time < System.currentTimeMillis()
+    fun isPast(date: String, startT: String): Boolean {
+        if (startT.isBlank()) return false
+        return getDateFromDateTime(date, startT)?.let {
+                it < Calendar.getInstance().time
+            } ?: false
+    }
+
+    fun getDateFromDateTime(date: String, time: String): Date? {
+        return SimpleDateFormat("dd-MMM-yyyy HH:mm", Locale.getDefault()).parse("$date $time")
     }
 }
