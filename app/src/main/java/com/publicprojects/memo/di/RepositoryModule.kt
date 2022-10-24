@@ -15,6 +15,9 @@ import javax.inject.Named
 object RepositoryModule {
 
     @Provides
-    fun provideMemoRepository(memoDao: MemoDao, @Named(Utils.CONFLICT_EXCEPTION) msg: String): MemoRepository =
-        MemoRepositoryImpl(excMsg = msg, memoDao = memoDao)
+    fun provideMemoRepository(
+        memoDao: MemoDao,
+        @Named(Utils.CONFLICT_EXCEPTION) excMsg: String
+    ): MemoRepository =
+        MemoRepositoryImpl(memoDao = memoDao, conflictExceptionMessage = excMsg)
 }

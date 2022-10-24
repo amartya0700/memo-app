@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import java.text.SimpleDateFormat
@@ -43,6 +44,14 @@ fun View.enabled(flag: Boolean) {
         alpha = 0.5f
         isClickable = false
     }
+}
+
+fun View.show() {
+    isVisible = true
+}
+
+fun View.hide() {
+    isVisible = false
 }
 
 fun Activity.setToolbarBackButton(toolbar: Toolbar) {

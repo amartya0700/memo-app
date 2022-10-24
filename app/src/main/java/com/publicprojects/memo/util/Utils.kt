@@ -7,10 +7,24 @@ object Utils {
 
     const val CONFLICT_EXCEPTION = "com.publicprojects.memo.CONFLICT_EXCEPTION"
 
-    fun getDateFromTS(date: Long): String {
+    fun getFullDateFromTS(date: Long): String {
         if (date == 0L) return ""
         return SimpleDateFormat(
             "dd-MMM-yyyy", Locale.getDefault()
+        ).format(date)
+    }
+
+    fun getTimeFromTs(date: Long): String {
+        if (date == 0L) return ""
+        return SimpleDateFormat(
+            "hh:mm aa", Locale.getDefault()
+        ).format(date)
+    }
+
+    fun getDateFromTs(date: Long): String {
+        if (date == 0L) return ""
+        return SimpleDateFormat(
+            "dd MMMM", Locale.getDefault()
         ).format(date)
     }
 

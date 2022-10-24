@@ -46,7 +46,6 @@ class CreateMemoViewModel @Inject constructor(
 
     fun saveMemo() {
         viewModelScope.launch {
-            _createMemo.value = UiState.Idle
             val startT = _eventStartTime.value!!
             val date = _eventDate.value!!
             checkIfDateIsPast(date, startT)
@@ -70,7 +69,7 @@ class CreateMemoViewModel @Inject constructor(
 
     fun setPickedDate(date: Long) {
         viewModelScope.launch {
-            _eventDate.value = Utils.getDateFromTS(date)
+            _eventDate.value = Utils.getFullDateFromTS(date)
             validateFields()
         }
     }
@@ -128,5 +127,9 @@ class CreateMemoViewModel @Inject constructor(
         } else {
             startTimeError.value = ""
         }
+    }
+
+    fun resetUiState() {
+        _createMemo.value = UiState.Idle
     }
 }

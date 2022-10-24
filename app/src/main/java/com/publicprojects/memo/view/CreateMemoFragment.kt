@@ -141,11 +141,13 @@ class CreateMemoFragment : Fragment(R.layout.fragment_create_memo) {
                                 requireContext().applicationContext, "Added new memo", Toast.LENGTH_LONG
                             ).show()
                             requireActivity().onBackPressedDispatcher.onBackPressed()
+                            viewModel.resetUiState()
                         }
                         is UiState.Failure -> {
                             Snackbar.make(
                                 binding.root, it.t.message ?: "", Snackbar.LENGTH_LONG
                             ).show()
+                            viewModel.resetUiState()
                         }
                     }
                 }

@@ -7,7 +7,7 @@ import com.publicprojects.memo.model.Memo
 
 @Dao
 interface MemoDao {
-    @Query("select * from memos where start_time > :currentTs")
+    @Query("select * from memos where start_time > :currentTs order by start_time")
     fun getUpcoming(currentTs: Long = System.currentTimeMillis()): List<Memo>
 
     @Query("select * from memos")
